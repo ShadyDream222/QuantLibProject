@@ -1,57 +1,66 @@
 
-# QuantLib: the free/open-source library for quantitative finance
+# Introduction to QuantLib - IMT 2023
 
-[![Download](https://img.shields.io/github/v/release/lballabio/QuantLib?label=Download&sort=semver)](https://github.com/lballabio/QuantLib/releases/latest)
-[![Licensed under the BSD 3-Clause License](https://img.shields.io/badge/License-BSD--3--Clause-blue.svg)](https://github.com/lballabio/QuantLib/blob/master/LICENSE.TXT)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1440997.svg)](https://doi.org/10.5281/zenodo.1440997)
-[![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/lballabio/QuantLib/blob/master/CONTRIBUTING.md)
+## Coding project: use constant parameters in Monte Carlo engines
 
-[![Linux build status](https://github.com/lballabio/QuantLib/workflows/Linux%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib/actions?query=workflow%3A%22Linux+build%22)
-[![Windows build status](https://ci.appveyor.com/api/projects/status/bmpiucu74eldfkm0/branch/master?svg=true)](https://ci.appveyor.com/project/lballabio/quantlib/branch/master)
-[![Mac OS build status](https://github.com/lballabio/QuantLib/workflows/Mac%20OS%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib/actions?query=workflow%3A%22Mac+OS+build%22)
-[![CMake build status](https://github.com/lballabio/QuantLib/workflows/CMake%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib/actions?query=workflow%3A%22CMake+build%22)
+In Monte Carlo engines, repeated calls to the process methods may
+cause a performance hit; especially when the process is an instance of
+the `GeneralizedBlackScholesProcess` class, whose methods in
+turn make expensive method calls to the contained term structures.
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/b4bc1058db994f24aa931b119a885eea)](https://www.codacy.com/gh/lballabio/QuantLib/dashboard)
-[![Coverage Status](https://coveralls.io/repos/github/lballabio/QuantLib/badge.svg?branch=master)](https://coveralls.io/github/lballabio/QuantLib?branch=master)
+The performance of the engine can be increased at the expense of some
+accuracy.  Create a new class that models a Black-Scholes process with
+constant parameters (underlying value, risk-free rate, dividend yield,
+and volatility); then modify the Monte Carlo engines copied in this
+repository so that they still take a generic Black-Scholes process and
+an additional boolean parameter.  If the boolean is `false`, the
+engine runs as usual; if it is `true`, the engine extracts the
+constant parameters from the original process (based on the exercise
+date of the option; for instance, the constant risk-free rate should
+be the zero-rate of the full risk-free curve at the exercise date) and
+runs the Monte Carlo simulation with an instance of the constant
+process.
 
----
+**You should not modify the `main.cpp` file, only the engines and the
+new constant process.**
 
-The QuantLib project (<https://www.quantlib.org>) is aimed at providing a
-comprehensive software framework for quantitative finance. QuantLib is
-a free/open-source library for modeling, trading, and risk management
-in real-life.
+After your modifications:
 
-QuantLib is Non-Copylefted Free Software and OSI Certified Open Source
-Software.
+1. Compare the results (value, elapsed time) obtained with and without
+   constant parameters.  The value with non-constant parameters should
+   be the same returned from the original engine in QuantLib.  The
+   value with constant parameters should be similar but not identical,
+   and hopefully the elapsed time should decrease.
 
+2. Try to avoid duplication between the three engines that you are
+   modifying (European, Asian, barrier).  Ideally, some of the
+   additional code (for instance, extracting the constant parameters
+   based on exercise date and strike) should be written just once.
 
-## Download and usage
-
-QuantLib can be downloaded from <https://www.quantlib.org/download.shtml>;
-installation instructions are available at
-<https://www.quantlib.org/install.shtml> for most platforms.
-
-Documentation for the usage and the design of the QuantLib library is
-available from <https://www.quantlib.org/docs.shtml>.
-
-A list of changes for each past versions of the library can be
-browsed at <https://www.quantlib.org/reference/history.html>.
-
-
-## Questions and feedback
-
-The preferred channel for questions (and the one with the largest
-audience) is the quantlib-users mailing list.  Instructions for
-subscribing are at <https://www.quantlib.org/mailinglists.shtml>.
-
-Bugs can be reported as a GitHub issue at
-<https://github.com/lballabio/QuantLib/issues>; if you have a patch
-available, you can open a pull request instead (see "Contributing"
-below).
+To compile and run the program on your machine you'll need QuantLib
+installed; instructions to do that for different operating systems are
+at <https://www.quantlib.org/install.shtml>.
 
 
-## Contributing
+## How to submit your solution
 
-Contributions are very welcome!  Details are in
-[CONTRIBUTING.md](https://github.com/lballabio/QuantLib/blob/master/CONTRIBUTING.md)
+1. Get a GitHub account, if you don't have one already.
+2. Clone this repository with the "Fork" button in the top right
+   corner of the page (if you're not reading this on GitHub, go to
+   <https://github.com/lballabio/IMT2023> first).
+3. Check out your clone on your machine.
+4. Modify the source files as required by the project.  Feel free to
+   add any other file you might need. You can also add your report.
+5. When you want me to see your progress (ideally, as soon as you have
+   a sketch of the solution), push your changes to your clone and
+   submit a pull request.  This is only needed the first time;
+   afterwards, push the new changes to your fork and they will be
+   added to the existing pull request automatically.
+
+More detailed instructions for forking and creating pull requests are
+available at <https://help.github.com/articles/fork-a-repo> and
+<https://help.github.com/articles/using-pull-requests>.  A basic guide
+to GitHub is at <https://guides.github.com/activities/hello-world/>.
+
+Good luck!
 
